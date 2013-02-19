@@ -3,6 +3,8 @@
 # サーバ申請後のログイン確認テストを
 # 自動で行うためのスクリプト
 
+. loginTest3.sh
+
 #-----------------------
 # ファイルを1行ごとに読み込む関数
 # 空行は削除し、配列READ_DATAに格納する
@@ -77,16 +79,23 @@ function accessTest(){
          local range=`echo ${val[0]} | tr '-' ' '`
          for INDEX in `seq ${range}`
          do
-            echo "${hostArry[0]}${INDEX}${val[1]}に対してアクセステストを行います。"
-            echo "ssh ${hostArry[0]}${INDEX}${val[1]};y;${PASSWORD};${sudoCommand}exit;"
+            #echo "${hostArry[0]}${INDEX}${val[1]}に対してアクセステストを行います。"
+            #echo "ssh ${hostArry[0]}${INDEX}${val[1]};y;${PASSWORD};${sudoCommand}exit;"
+            #ssh ${hostArry[0]}${INDEX}${val[1]} | "y;${PASSWORD};${sudoCommand}exit;"
+	    auto_ssh ${hostArry[0]}${INDEX}${val[1]} otatakefumi01 ${PASSWORD}
          done
          ;;
       *)
-         echo "${hostArry[0]}${val}に対してアクセステストを行います。"
-         echo "ssh ${hostArry[0]}${val};y;${PASSWORD}${sudoCommand}exit;"
+         #echo "${hostArry[0]}${val}に対してアクセステストを行います。"
+         #ssh ${hostArry[0]}${val} | "y;${PASSWORD};${sudoCommand}exit;"
+	 auto_ssh ${hostArry[0]}${val} otatakefumi01 ${PASSWORD}
          ;;
       esac
    done
+}
+
+function accessTest2(){
+auto_ssh $1 $2 $PASSWORD
 }
 
 #----------------------

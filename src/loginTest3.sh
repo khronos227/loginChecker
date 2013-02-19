@@ -1,18 +1,10 @@
 #!/bin/sh
  
 auto_ssh() {
-trap "stty echo; exit 1" 2
 
 host=$1
 id=$2
-#pass=$3
-stty -echo
-echo -n "password:"
-read pass
-
-stty echo
-echo ""
- 
+pass=$3
 expect -c "
 set timeout 3
 spawn ssh $1
@@ -34,6 +26,8 @@ expect \"Password:\" {
 	send \"${pass}\n\"
 } \"password\" {
 	send \"${pass}\n\"
+} \":\" {
+	send \"${pass}\n\"
 }
 expect \"~]\" {
         send \"exit\n\"
@@ -44,7 +38,4 @@ expect \"~]\" {
 interact
 "
 }
-
-auto_ssh $1 $2
-
 
