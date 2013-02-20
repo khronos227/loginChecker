@@ -61,12 +61,6 @@ function accessTest(){
       echo "処理をスキップします。"
       return 1
    fi
-   local sudoArry=( $2 )
-   local sudoCommand=""
-   for SUDO in ${sudoArry[@]}
-   do
-      sudoCommand="${sudoCommand}sudo su ${SUDO};${PASSWORD};exit;"
-   done
 
    local hostArry=( $1 )
    local maxIndex=`expr ${#hostArry[*]} - 1`
@@ -79,32 +73,32 @@ function accessTest(){
          local range=`echo ${val[0]} | tr '-' ' '`
          for INDEX in `seq ${range}`
          do
-            #echo "${hostArry[0]}${INDEX}${val[1]}に対してアクセステストを行います。"
-            #echo "ssh ${hostArry[0]}${INDEX}${val[1]};y;${PASSWORD};${sudoCommand}exit;"
-            #ssh ${hostArry[0]}${INDEX}${val[1]} | "y;${PASSWORD};${sudoCommand}exit;"
 	    auto_ssh ${hostArry[0]}${INDEX}${val[1]} otatakefumi01 ${PASSWORD}
          done
          ;;
       *)
-         #echo "${hostArry[0]}${val}に対してアクセステストを行います。"
-         #ssh ${hostArry[0]}${val} | "y;${PASSWORD};${sudoCommand}exit;"
 	 auto_ssh ${hostArry[0]}${val} otatakefumi01 ${PASSWORD}
          ;;
       esac
    done
 }
 
-function accessTest2(){
-auto_ssh $1 $2 $PASSWORD
-}
-
 #----------------------
 # main
 #----------------------
-if [ $# -ne 2 ]; then
-   echo "[usage] loginTest.sh <file name> <password>"
+if [ $# -ne 1 ]; then
+   echo "[usage] loginTest.sh <file name>"
    exit 1;
 fi
+
+trap "stty echo; exit 1" 2
+
+stty -echo
+echo -n "password:"
+read PASSWORD
+
+stty echo
+echo ""
 
 isReadableFile $1
 if [ ! $? -eq 0 ]; then
@@ -122,8 +116,6 @@ if [ `expr ${#READ_DATA[*]} % 3` -ne 0 ]; then
    exit 1
 fi
 echo "読み込み結果(行数)チェック完了"
-
-PASSWORD="$2"
 
 echo "アクセステスト開始"
 SERVER_MAX_INDEX=`expr \( ${#READ_DATA[*]} / 3 \) - 1`
