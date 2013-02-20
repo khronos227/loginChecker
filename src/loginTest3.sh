@@ -9,30 +9,30 @@ expect -c "
 set timeout 3
 spawn ssh $1
 expect \"Are you sure you want to continue connecting (yes/no)?\" {
-	send \"yes\n\"
+	send \"yes\r\"
 	expect \"${id}@${host}'s password:\" {
-		send \"${pass}\n\"
+		send \"${pass}\r\"
 	}
 } \"${id}@${host}'s password:\" {
-	send \"${pass}\n\"
+	send \"${pass}\r\"
 }
 
 expect \"~]\" {
-	send \"sudo -l\n\"
+	send \"sudo -l\r\"
 } \">\" {
-	send \"sudo -l\n\"
+	send \"sudo -l\r\"
 }
 expect \"Password:\" {
-	send \"${pass}\n\"
+	send \"${pass}\r\"
 } \"password\" {
-	send \"${pass}\n\"
+	send \"${pass}\r\"
 } \":\" {
-	send \"${pass}\n\"
+	send \"${pass}\r\"
 }
 expect \"~]\" {
-        send \"exit\n\"
+        send \"exit\r\"
 } \">\" {
-	send \"exit\n\"
+	send \"exit\r\"
 }
 
 interact

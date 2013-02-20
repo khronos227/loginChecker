@@ -86,19 +86,10 @@ function accessTest(){
 #----------------------
 # main
 #----------------------
-if [ $# -ne 1 ]; then
-   echo "[usage] loginTest.sh <file name>"
+if [ $# -ne 2 ]; then
+   echo "[usage] loginTest.sh <file name> <password>"
    exit 1;
 fi
-
-trap "stty echo; exit 1" 2
-
-stty -echo
-echo -n "password:"
-read PASSWORD
-
-stty echo
-echo ""
 
 isReadableFile $1
 if [ ! $? -eq 0 ]; then
@@ -116,6 +107,8 @@ if [ `expr ${#READ_DATA[*]} % 3` -ne 0 ]; then
    exit 1
 fi
 echo "読み込み結果(行数)チェック完了"
+
+PASSWORD=$2
 
 echo "アクセステスト開始"
 SERVER_MAX_INDEX=`expr \( ${#READ_DATA[*]} / 3 \) - 1`
