@@ -3,51 +3,8 @@
 # サーバ申請後のログイン確認テストを
 # 自動で行うためのスクリプト
 
-. loginTest3.sh
-
-#-----------------------
-# ファイルを1行ごとに読み込む関数
-# 空行は削除し、配列READ_DATAに格納する
-#-----------------------
-READ_DATA=()
-
-function readFile(){
-   local count=0
-   local null_line=" *"
-   local default="*"
-   while read line
-   do 
-      line=`echo "${line}" | sed -e 's/^\s*$//'`
-      if [ "${line}" = "" ]; then
-         continue
-      fi
-      line=`echo "${line}" | sed -e 's/^[^\[]*\[\(.*\)\].*$/\1/'`
-      READ_DATA[${count}]="${line}"
-      count=`expr ${count} + 1`
-   done < $1
-}
-
-#----------------------
-# ファイルが存在し，読み取り可能であるかを確認する
-# 返り値：読み取り可能=>0
-#         読み取り不可=>1
-#----------------------
-function isReadableFile(){
-   if [ ! -e $1 ]; then
-      echo "ファイル${1}が存在しません。"
-      return 1
-   elif [ ! -f $1 ]; then
-      echo "${1}はファイルではありません。"
-      return 1
-   elif [ ! -r $1 ]; then
-      echo "${1}の読み込み権限がありません。"
-      return 1
-   elif [ ! -s $1 ]; then
-      echo "${1}のファイルサイズが0です。"
-      return 1
-   fi
-   return 0
-}
+. ./util.sh
+. ./loginTest3.sh
 
 #---------------------
 # 各ホストへのアクセステストを行う
@@ -73,11 +30,11 @@ function accessTest(){
          local range=`echo ${val[0]} | tr '-' ' '`
          for INDEX in `seq ${range}`
          do
-	    auto_ssh ${hostArry[0]}${INDEX}${val[1]} otatakefumi01 ${PASSWORD}
+            auto_ssh ${hostArry[0]}${INDEX}${val[1]} otatakefumi01 ${PASSWORD}
          done
          ;;
       *)
-	 auto_ssh ${hostArry[0]}${val} otatakefumi01 ${PASSWORD}
+         auto_ssh ${hostArry[0]}${val} otatakefumi01 ${PASSWORD}
          ;;
       esac
    done
